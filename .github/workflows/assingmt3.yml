@@ -52,4 +52,4 @@ jobs:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_USERNAME: Lai Wei Qi
           SLACK_TITLE: Assignment3
-          SLACK_MESSAGE: "New change:
+          SLACK_MESSAGE: "New change
