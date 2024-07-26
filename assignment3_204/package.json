@@ -1,0 +1,10 @@
+{
+  "name": "api-test-automation",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "newman run New_Collection.postman_collection.json"
+  },
+  "dependencies": {
+    "newman": "^5.2.2"
+  }
+}
