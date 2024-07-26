@@ -1,1 +1,55 @@
 
+name: Newman API Tests
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    defaults:
+      run:
+        working-directory: ./assignment3_204
+    environment: staging
+    name: "Run tests"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "18"
+      - name: Install newman
+        run: npm install -g newman
+      - name: Run tests
+        run: |
+          newman run New_Collection.postman_collection.json \
+          -r cli,json,junit \
+          --reporter-json-export ./newman-report.json \
+          --reporter-junit-export ./newman-report.xml
+        continue-on-error: true
+      - name: Check if reports were generated
+        run: |
+          ls -l newman-report.json newman-report.xml || echo "Reports not found"
+      - name: Debug - Print working directory
+        run: pwd
+      - name: Debug - List all files
+        run: find . -type f
+      - name: Debug - Check Newman output
+        run: cat newman-report.json || echo "newman-report.json not found"
+      - name: Upload test report
+        uses: actions/upload-artifact@v4
+        with:
+          name: testrun-report
+          path: .
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Verify artifact upload
+        run: |
+          echo "Artifact upload completed"
+          echo "Please check the 'Artifacts' section in the GitHub Actions run summary"
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_USERNAME: zi sheng teh
+          SLACK_TITLE: assignment3
+          SLACK_MESSAGE: "New change:rocket:"
